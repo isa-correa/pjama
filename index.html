@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PJÄMA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=DM+Mono:ital@0;1&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg:           #0f0a1a;
@@ -17,7 +17,7 @@
   --glass-bg:     rgba(12, 7, 25, 0.58);
   --glass-border: rgba(245,236,215,0.11);
   --font-hand:    'Caveat', cursive;
-  --font-body:    'Plus Jakarta Sans', sans-serif;
+  --font-body:    'Playfair Display', serif;
   --font-mono:    'DM Mono', monospace;
 }
 
@@ -112,8 +112,8 @@ body {
 /* ── LOGO — hidden, lives inside orb now ── */
 .logo { display: none; }
 
-/* ── ORB ── */
-.orb-wrap {
+/* ── VINYL DISC ── */
+.vinyl-wrap {
   position: relative;
   width: 140px;
   height: 140px;
@@ -124,72 +124,45 @@ body {
   justify-content: center;
   flex-shrink: 0;
 }
-.orb-ring {
+#vinylCanvas {
   position: absolute;
+  inset: 0;
   border-radius: 50%;
-  border: 1px solid rgba(232,85,122,0.18);
-  animation: orb-ring-pulse 3s ease-in-out infinite;
-  transition: transform 0.06s ease-out, opacity 0.06s ease-out;
+  transition: transform 0.06s ease-out;
+  transform-origin: center center;
 }
-.orb-ring:nth-child(1) { width: 130px; height: 130px; animation-delay: 0s; }
-.orb-ring:nth-child(2) { width: 155px; height: 155px; animation-delay: 0.6s; opacity:0.6; }
-.orb-ring:nth-child(3) { width: 180px; height: 180px; animation-delay: 1.2s; opacity:0.3; }
-
-.orb-core {
-  width: 110px;
-  height: 110px;
+.vinyl-label {
+  position: absolute;
+  width: 52px; height: 52px;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%,
-    rgba(255,180,200,0.9) 0%,
-    rgba(232,85,122,0.75) 40%,
-    rgba(123,79,190,0.6) 100%
+  background: radial-gradient(circle at 40% 38%,
+    #3a1a5a 0%, #1e0a35 60%, #150720 100%
   );
-  box-shadow:
-    0 0 20px rgba(232,85,122,0.5),
-    0 0 40px rgba(232,85,122,0.25),
-    0 0 80px rgba(123,79,190,0.2),
-    inset 0 1px 2px rgba(255,255,255,0.3);
-  transition: transform 0.05s ease-out, box-shadow 0.05s ease-out;
-  position: relative;
-  z-index: 1;
+  border: 1px solid rgba(245,236,215,0.15);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
-}
-.orb-core::after {
-  content: '';
-  position: absolute;
-  top: 14px; left: 18px;
-  width: 18px; height: 10px;
-  background: rgba(255,255,255,0.35);
-  border-radius: 50%;
-  transform: rotate(-30deg);
-  filter: blur(3px);
+  z-index: 2;
+  box-shadow: 0 0 12px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1);
   pointer-events: none;
+  transition: transform 0.06s ease-out;
+  transform-origin: center center;
 }
-.orb-label {
+.vinyl-label-text {
   font-family: var(--font-hand);
-  font-size: 28px;
+  font-size: 11px;
   font-weight: 700;
-  color: rgba(255,255,255,0.95);
+  color: var(--pink-lt);
   line-height: 1;
-  letter-spacing: -0.5px;
-  text-shadow: 0 1px 8px rgba(0,0,0,0.3);
-  pointer-events: none;
-  position: relative;
-  z-index: 2;
+  letter-spacing: 0;
 }
-.orb-label span { color: var(--cream); }
-.orb-sublabel {
-  font-family: var(--font-mono);
-  font-size: 7px;
-  color: rgba(255,255,255,0.6);
-  letter-spacing: 0.2em;
-  pointer-events: none;
-  position: relative;
-  z-index: 2;
+.vinyl-label-text span { color: var(--cream); }
+.vinyl-hole {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(245,236,215,0.15);
+  margin-top: 3px;
 }
 
 /* ── PLAYER CARD ── */
@@ -239,57 +212,28 @@ body {
 
 /* ── LYRICS ── */
 .lyrics {
-  height: 240px;
+  min-height: 72px;
   margin-bottom: 24px;
+  display: flex;
+  align-items: center;
   position: relative;
   overflow: hidden;
 }
-/* fade masks top and bottom so lines dissolve in/out naturally */
-.lyrics::before,
-.lyrics::after {
-  content: '';
-  position: absolute;
-  left: 0; right: 0;
-  height: 32px;
-  z-index: 2;
-  pointer-events: none;
-}
-.lyrics::before {
-  top: 0;
-  background: linear-gradient(to bottom, var(--glass-bg), transparent);
-}
-.lyrics::after {
-  bottom: 0;
-  background: linear-gradient(to top, var(--glass-bg), transparent);
-}
-.lyrics-inner {
-  position: absolute;
-  left: 0; right: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 6px;
-  transition: transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94),
-              opacity  0.3s ease;
-}
 .lyric-line {
   font-family: var(--font-body);
-  font-size: 18px;
-  font-weight: 300;
-  color: rgba(245,236,215,0.32);
-  line-height: 1.5;
-  white-space: normal;
-  letter-spacing: -0.01em;
-  transition: color 0.4s ease, font-size 0.35s ease,
-              font-weight 0.35s ease, text-shadow 0.4s ease;
-}
-.lyric-line.prev   { color: rgba(245,236,215,0.55); }
-.lyric-line.active {
-  font-size: 22px;
+  font-size: 21px;
   font-weight: 500;
+  font-style: normal;
   color: var(--cream);
-  text-shadow: 0 0 18px rgba(232,85,122,0.4);
-  letter-spacing: -0.02em;
+  line-height: 1.45;
+  white-space: normal;
+  letter-spacing: 0;
+  text-shadow: 0 0 16px rgba(232,85,122,0.3);
+  animation: lyric-in 0.5s cubic-bezier(0.25,0.46,0.45,0.94) both;
+}
+@keyframes lyric-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ── WAVEFORM ── */
@@ -390,10 +334,6 @@ body {
 }
 
 /* ── ANIMATIONS ── */
-@keyframes orb-ring-pulse {
-  0%,100% { opacity:0.15; transform:scale(1); }
-  50%     { opacity:0.38; transform:scale(1.06); }
-}
 @keyframes ticker-scroll {
   0%   { transform:translateX(0); }
   100% { transform:translateX(-50%); }
@@ -422,12 +362,11 @@ body {
     <div class="logo-sub">▶ NOW PLAYING</div>
   </div>
 
-  <div class="orb-wrap">
-    <div class="orb-ring"></div>
-    <div class="orb-ring"></div>
-    <div class="orb-ring"></div>
-    <div class="orb-core" id="orbCore">
-      <div class="orb-label">PJ<span>Ä</span>MA</div>
+  <div class="vinyl-wrap">
+    <canvas id="vinylCanvas" width="140" height="140"></canvas>
+    <div class="vinyl-label">
+      <div class="vinyl-label-text">PJ<span>Ä</span>MA</div>
+      <div class="vinyl-hole"></div>
     </div>
   </div>
 
@@ -436,12 +375,7 @@ body {
     <div class="track-artist">PJÄMA · 2026 · single</div>
 
     <div class="lyrics" id="lyricsContainer">
-      <div class="lyrics-inner" id="lyricsInner">
-        <div class="lyric-line">El pijama de teletrabajo</div>
-        <div class="lyric-line active">profesional de cintura pa' arriba</div>
-        <div class="lyric-line">la cámara encendida, la cama sin hacer</div>
-        <div class="lyric-line">y los pantalones… opcionales, oh yeah</div>
-      </div>
+      <div class="lyric-line active" id="lyricActive">El pijama de teletrabajo</div>
     </div>
 
     <div class="waveform" id="waveform"></div>
@@ -507,10 +441,8 @@ const DROPS = Array.from({length:130}, () => ({
 })();
 
 // ─── WEB AUDIO ────────────────────────────────────────────────────────
-const audio    = document.getElementById('audio');
-const orbCore  = document.getElementById('orbCore');
-const orbRings = document.querySelectorAll('.orb-ring');
-let audioCtx, analyser, dataArray, audioReady = false, orbRaf;
+const audio = document.getElementById('audio');
+let audioCtx, analyser, dataArray, audioReady = false;
 
 function initAudio() {
   if (audioReady) return;
@@ -532,82 +464,124 @@ function initAudio() {
   }
 }
 
-let orbPeak = 0; // peak envelope tracker
+let vinylPeak = 0;
+let vinylAngle = 0;
+let vinylRaf;
+let vinylPlaying = false;
 
-function orbLoop() {
-  if (!audioReady) return;
-  analyser.getByteFrequencyData(dataArray);
+// ─── VINYL DISC DRAWING ───────────────────────────────────────────────
+const vc    = document.getElementById('vinylCanvas');
+const vctx  = vc.getContext('2d');
+const VR    = 70; // radius
+const VCX   = 70;
+const VCY   = 70;
 
-  // Bass: bins 1–16 (kick + sub), wider window catches dembow kick
-  const bassRaw = dataArray.slice(1, 16).reduce((a,b)=>a+b,0) / 15 / 255;
-  // Mid for color
-  const mid = dataArray.slice(16, 60).reduce((a,b)=>a+b,0) / 44 / 255;
+function drawVinyl(angle, energy) {
+  vctx.clearRect(0, 0, 140, 140);
 
-  // Peak envelope: fast attack, slow decay — makes expand/contract pop clearly
-  if (bassRaw > orbPeak) {
-    orbPeak = bassRaw;                  // instant attack
-  } else {
-    orbPeak *= 0.88;                    // smooth decay
+  vctx.save();
+  vctx.translate(VCX, VCY);
+  vctx.rotate(angle);
+
+  // outer disc
+  vctx.beginPath();
+  vctx.arc(0, 0, VR, 0, Math.PI * 2);
+  vctx.fillStyle = '#0d0818';
+  vctx.fill();
+
+  // vinyl grooves — concentric rings with slight color variation
+  const grooveCount = 18;
+  for (let i = 0; i < grooveCount; i++) {
+    const r = 28 + i * 2.2;
+    const alpha = 0.06 + (i % 3 === 0 ? 0.06 : 0) + energy * 0.08;
+    vctx.beginPath();
+    vctx.arc(0, 0, r, 0, Math.PI * 2);
+    vctx.strokeStyle = `rgba(180,140,220,${alpha})`;
+    vctx.lineWidth = 0.6;
+    vctx.stroke();
   }
 
-  const energy = Math.pow(orbPeak, 0.7); // gamma curve — more responsive at low levels
-  const scale  = 1 + energy * 0.7;       // max ~1.7× at full bass
-  const g1     = 16 + energy * 70;
-  const g2     = 32 + energy * 110;
+  // highlight shimmer arc — rotates with disc
+  const grad = vctx.createLinearGradient(-VR, 0, VR, 0);
+  grad.addColorStop(0,    'rgba(255,255,255,0)');
+  grad.addColorStop(0.45, `rgba(255,255,255,${0.04 + energy * 0.06})`);
+  grad.addColorStop(0.55, `rgba(255,255,255,${0.04 + energy * 0.06})`);
+  grad.addColorStop(1,    'rgba(255,255,255,0)');
+  vctx.beginPath();
+  vctx.arc(0, 0, VR, 0, Math.PI * 2);
+  vctx.fillStyle = grad;
+  vctx.fill();
 
-  orbCore.style.transform = `scale(${scale.toFixed(3)})`;
-  orbCore.style.boxShadow = `
-    0 0 ${g1}px rgba(232,85,122,${Math.min(0.95, 0.35+energy*0.7).toFixed(2)}),
-    0 0 ${g2}px rgba(232,85,122,${Math.min(0.6, 0.15+energy*0.5).toFixed(2)}),
-    0 0 ${(g2*1.8).toFixed(0)}px rgba(${Math.round(80+mid*120)},50,200,${Math.min(0.5, 0.1+mid*0.45).toFixed(2)}),
-    inset 0 1px 2px rgba(255,255,255,0.3)`;
+  // outer rim
+  vctx.beginPath();
+  vctx.arc(0, 0, VR - 0.5, 0, Math.PI * 2);
+  vctx.strokeStyle = `rgba(245,236,215,${0.08 + energy * 0.12})`;
+  vctx.lineWidth = 1;
+  vctx.stroke();
 
-  orbRings.forEach((r, i) => {
-    const rs = 1 + energy * (0.55 - i * 0.12);
-    const op = Math.min(0.9, 0.12 + energy * (0.7 - i * 0.18));
-    r.style.transform = `scale(${rs.toFixed(3)})`;
-    r.style.opacity   = op.toFixed(3);
-  });
+  vctx.restore();
 
-  orbRaf = requestAnimationFrame(orbLoop);
+  // warm glow under disc reacting to beat
+  if (energy > 0.05) {
+    const glowGrad = vctx.createRadialGradient(VCX, VCY, 20, VCX, VCY, VR + 20);
+    glowGrad.addColorStop(0,   `rgba(232,85,122,${(energy * 0.3).toFixed(2)})`);
+    glowGrad.addColorStop(0.6, `rgba(123,79,190,${(energy * 0.15).toFixed(2)})`);
+    glowGrad.addColorStop(1,   'rgba(0,0,0,0)');
+    vctx.beginPath();
+    vctx.arc(VCX, VCY, VR + 20, 0, Math.PI * 2);
+    vctx.fillStyle = glowGrad;
+    vctx.fill();
+  }
 }
 
-// Fallback BPM orb when Web Audio not available
+function vinylLoop() {
+  if (audioReady) {
+    analyser.getByteFrequencyData(dataArray);
+    const bassRaw = dataArray.slice(1, 16).reduce((a,b)=>a+b,0) / 15 / 255;
+    if (bassRaw > vinylPeak) vinylPeak = bassRaw;
+    else vinylPeak *= 0.88;
+  } else {
+    vinylPeak *= 0.92;
+  }
+
+  const energy = Math.pow(vinylPeak, 0.7);
+
+  // rotate: base speed + wobble on beat
+  const baseSpeed = 0.018;
+  const wobble    = energy * 0.04;
+  vinylAngle += baseSpeed + wobble;
+
+  drawVinyl(vinylAngle, energy);
+
+  // scale the entire vinyl wrap to expand/contract with beat
+  const scale = 1 + energy * 0.18;
+  vc.style.transform = `scale(${scale.toFixed(3)})`;
+  const lbl = document.querySelector('.vinyl-label');
+  if (lbl) lbl.style.transform = `scale(${scale.toFixed(3)})`;
+
+  vinylRaf = requestAnimationFrame(vinylLoop);
+}
+
+// BPM pulse for fallback when Web Audio not ready
 const BPM_MS = (60/95)*1000;
 let bpmInterval;
-let bpmScale = 1;
-let bpmRaf;
+function startBpmPulse() {
+  bpmInterval = setInterval(() => { vinylPeak = 0.85; }, BPM_MS);
+}
+function stopBpmPulse() { clearInterval(bpmInterval); }
 
-function bpmTick() {
-  bpmScale += (1 - bpmScale) * 0.16;
-  const s = bpmScale;
-  const g = 20 + (s-1)*100;
-  orbCore.style.transform = `scale(${s.toFixed(3)})`;
-  orbCore.style.boxShadow = `
-    0 0 ${g}px rgba(232,85,122,${(0.4+(s-1)*1).toFixed(2)}),
-    0 0 ${g*2}px rgba(232,85,122,${(0.2+(s-1)*0.5).toFixed(2)}),
-    inset 0 1px 2px rgba(255,255,255,0.3)`;
-  orbRings.forEach((r,i) => {
-    r.style.transform = `scale(${(1+(s-1)*(0.5-i*0.12)).toFixed(3)})`;
-    r.style.opacity   = (0.15+(s-1)*(0.6-i*0.15)).toFixed(3);
-  });
-  if (Math.abs(bpmScale-1) > 0.002) bpmRaf = requestAnimationFrame(bpmTick);
+function startVinyl() {
+  if (!vinylRaf) vinylLoop();
+}
+function stopVinyl() {
+  cancelAnimationFrame(vinylRaf); vinylRaf = null;
+  stopBpmPulse();
+  drawVinyl(vinylAngle, 0);
 }
 
-function startBpmOrb() {
-  bpmScale = 1.3; bpmTick();
-  bpmInterval = setInterval(() => { bpmScale = 1.3; bpmTick(); }, BPM_MS);
-}
-function stopBpmOrb() {
-  clearInterval(bpmInterval); cancelAnimationFrame(bpmRaf);
-}
-
-function stopOrbLoop() {
-  cancelAnimationFrame(orbRaf); orbRaf = null;
-  stopBpmOrb();
-  orbCore.style.transform='scale(1)'; orbCore.style.boxShadow='';
-  orbRings.forEach(r=>{ r.style.transform=''; r.style.opacity=''; });
-}
+// draw idle state immediately and start spinning
+drawVinyl(0, 0);
+vinylLoop(); // always spinning from page load
 
 // ─── WAVEFORM ─────────────────────────────────────────────────────────
 const waveform = document.getElementById('waveform');
@@ -638,48 +612,21 @@ const LYRICS = [
   "el desorden detrás que nadie va a ver",
   "y los pantalones… opcionales, oh yeah",
 ];
-const LYRIC_T = [0, 3, 6, 8, 11, 13, 16, 18];
-const lyricsContainer = document.getElementById('lyricsContainer');
-const lyricsInner = document.getElementById('lyricsInner');
+const LYRIC_T = [0, 3, 5, 8, 11, 13, 15, 18];
+const lyricEl = document.getElementById('lyricActive');
 let lastActive = -1;
-
-// Pre-render ALL lines, then slide the inner block to show the right window
-function buildLyrics() {
-  lyricsInner.innerHTML = '';
-  LYRICS.forEach((text, i) => {
-    const ln = document.createElement('div');
-    ln.className = 'lyric-line';
-    ln.textContent = text;
-    ln.dataset.idx = i;
-    lyricsInner.appendChild(ln);
-  });
-}
-buildLyrics();
 
 function updateLyrics(t) {
   let active = 0;
   LYRIC_T.forEach((ts, i) => { if (t >= ts) active = i; });
-
-  // Update active/prev classes without rebuilding DOM
-  lyricsInner.querySelectorAll('.lyric-line').forEach((ln, i) => {
-    ln.classList.remove('active', 'prev');
-    if (i === active)       ln.classList.add('active');
-    else if (i === active - 1) ln.classList.add('prev');
-  });
-
   if (active === lastActive) return;
   lastActive = active;
 
-  // Measure line height to compute scroll offset
-  const lines = lyricsInner.querySelectorAll('.lyric-line');
-  const containerH = lyricsContainer.offsetHeight;
-  const activeLine = lines[active];
-  if (!activeLine) return;
-
-  // Position inner so active line sits in the upper-center of the container
-  const lineTop = activeLine.offsetTop;
-  const targetY = Math.max(0, lineTop - containerH * 0.28);
-  lyricsInner.style.transform = `translateY(-${targetY}px)`;
+  // Swap text and re-trigger animation
+  lyricEl.textContent = LYRICS[active];
+  lyricEl.style.animation = 'none';
+  lyricEl.offsetHeight; // force reflow
+  lyricEl.style.animation = '';
 }
 
 // ─── PLAYER ───────────────────────────────────────────────────────────
@@ -701,7 +648,7 @@ function updateUI() {
 audio.addEventListener('timeupdate', updateUI);
 audio.addEventListener('ended', () => {
   playIcon.style.display='block'; pauseIcon.style.display='none';
-  playBtn.classList.remove('playing'); stopOrbLoop();
+  playBtn.classList.remove('playing'); stopBpmPulse();
 });
 
 async function play() {
@@ -726,17 +673,14 @@ async function play() {
   pauseIcon.style.display = 'block';
   playBtn.classList.add('playing');
 
-  // Start orb: Web Audio analyser if available, BPM fallback otherwise
-  if (audioReady && !orbRaf) {
-    orbLoop();
-  } else if (!audioReady) {
-    startBpmOrb();
-  }
+  // BPM fallback pulse if Web Audio not ready
+  if (!audioReady) startBpmPulse();
 }
 function pause() {
   audio.pause();
   playIcon.style.display='block'; pauseIcon.style.display='none';
-  playBtn.classList.remove('playing'); stopOrbLoop();
+  playBtn.classList.remove('playing');
+  stopBpmPulse();
 }
 
 playBtn.addEventListener('click', ()=> audio.paused ? play() : pause());
