@@ -554,7 +554,7 @@ function vinylLoop() {
   drawVinyl(vinylAngle, energy);
 
   // scale the entire vinyl wrap to expand/contract with beat
-  const scale = 1 + energy * 0.18;
+  const scale = 1 + energy * 0.45;
   vc.style.transform = `scale(${scale.toFixed(3)})`;
   const lbl = document.querySelector('.vinyl-label');
   if (lbl) lbl.style.transform = `scale(${scale.toFixed(3)})`;
