@@ -36,41 +36,38 @@ body {
   position: fixed;
   top: 0; bottom: 0;
   left: 0;
-  width: 107%;
+  width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: left center;
+  object-position: center center;
   z-index: 0;
-  transform: translateX(-7%);
   animation: organic-drift 28s ease-in-out infinite alternate;
   transform-origin: center center;
   will-change: transform;
 }
 
 @keyframes organic-drift {
-  0%   { transform: translateX(-7%) scale(1.08) translate(0px,    0px)   rotate(0deg);   }
-  20%  { transform: translateX(-7%) scale(1.12) translate(-12px, -10px)  rotate(0.3deg); }
-  40%  { transform: translateX(-7%) scale(1.10) translate(8px,   -14px)  rotate(-0.2deg);}
-  60%  { transform: translateX(-7%) scale(1.14) translate(-6px,   12px)  rotate(0.35deg);}
-  80%  { transform: translateX(-7%) scale(1.11) translate(14px,   4px)   rotate(-0.25deg);}
-  100% { transform: translateX(-7%) scale(1.09) translate(-10px, -6px)   rotate(0.15deg);}
+  0%   { transform: scale(1.05) translate(0px,    0px)   rotate(0deg);   }
+  20%  { transform: scale(1.08) translate(-10px, -8px)   rotate(0.2deg); }
+  40%  { transform: scale(1.06) translate(6px,   -10px)  rotate(-0.15deg);}
+  60%  { transform: scale(1.09) translate(-5px,   9px)   rotate(0.25deg); }
+  80%  { transform: scale(1.07) translate(10px,   3px)   rotate(-0.2deg); }
+  100% { transform: scale(1.05) translate(-8px,  -5px)   rotate(0.1deg);  }
 }
 
-/* gradient overlay — right side dark for player, left transparent for character */
+/* gradient overlay — right side subtle dark for player readability */
 #bg-overlay {
   position: fixed;
   inset: 0;
   background:
     linear-gradient(to left,
-      rgba(8,4,18,1)    0%,
-      rgba(8,4,18,1)    10%,
-      rgba(8,4,18,0.96) 18%,
-      rgba(8,4,18,0.75) 30%,
-      rgba(8,4,18,0.35) 50%,
-      rgba(8,4,18,0.0)  70%),
+      rgba(8,4,18,0.72) 0%,
+      rgba(8,4,18,0.45) 35%,
+      rgba(8,4,18,0.1)  65%,
+      rgba(8,4,18,0.0)  100%),
     linear-gradient(to top,
-      rgba(8,4,18,0.7)  0%,
-      transparent       50%);
+      rgba(8,4,18,0.5)  0%,
+      transparent       45%);
   z-index: 1;
   pointer-events: none;
 }
@@ -242,34 +239,57 @@ body {
 
 /* ── LYRICS ── */
 .lyrics {
-  min-height: 240px;
+  height: 240px;
   margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+/* fade masks top and bottom so lines dissolve in/out naturally */
+.lyrics::before,
+.lyrics::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 32px;
+  z-index: 2;
+  pointer-events: none;
+}
+.lyrics::before {
+  top: 0;
+  background: linear-gradient(to bottom, var(--glass-bg), transparent);
+}
+.lyrics::after {
+  bottom: 0;
+  background: linear-gradient(to top, var(--glass-bg), transparent);
+}
+.lyrics-inner {
+  position: absolute;
+  left: 0; right: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 6px;
+  transition: transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94),
+              opacity  0.3s ease;
 }
 .lyric-line {
   font-family: var(--font-body);
   font-size: 18px;
   font-weight: 300;
-  font-style: normal;
   color: rgba(245,236,215,0.32);
   line-height: 1.5;
-  transition: color 0.4s ease, font-size 0.3s ease;
   white-space: normal;
   letter-spacing: -0.01em;
-  margin-bottom: 6px;
+  transition: color 0.4s ease, font-size 0.35s ease,
+              font-weight 0.35s ease, text-shadow 0.4s ease;
 }
 .lyric-line.prev   { color: rgba(245,236,215,0.55); }
 .lyric-line.active {
-  font-family: var(--font-body);
   font-size: 22px;
   font-weight: 500;
-  font-style: normal;
   color: var(--cream);
   text-shadow: 0 0 18px rgba(232,85,122,0.4);
   letter-spacing: -0.02em;
-  margin-bottom: 6px;
 }
 
 /* ── WAVEFORM ── */
@@ -386,7 +406,7 @@ body {
 </head>
 <body>
 
-<video id="bg-video" autoplay loop muted playsinline preload="auto" src="cover-pjama.mp4"></video>
+<video id="bg-video" autoplay loop muted playsinline preload="auto" src="cover-pjama2.mp4"></video>
 <div id="bg-overlay"></div>
 <div id="grain"></div>
 <canvas id="rainCanvas"></canvas>
@@ -416,10 +436,12 @@ body {
     <div class="track-artist">PJÄMA · 2026 · single</div>
 
     <div class="lyrics" id="lyricsContainer">
-      <div class="lyric-line">El pijama de teletrabajo</div>
-      <div class="lyric-line active">profesional de cintura pa' arriba</div>
-      <div class="lyric-line">la cámara encendida, la cama sin hacer</div>
-      <div class="lyric-line">y los pantalones… opcionales, oh yeah</div>
+      <div class="lyrics-inner" id="lyricsInner">
+        <div class="lyric-line">El pijama de teletrabajo</div>
+        <div class="lyric-line active">profesional de cintura pa' arriba</div>
+        <div class="lyric-line">la cámara encendida, la cama sin hacer</div>
+        <div class="lyric-line">y los pantalones… opcionales, oh yeah</div>
+      </div>
     </div>
 
     <div class="waveform" id="waveform"></div>
@@ -616,20 +638,48 @@ const LYRICS = [
   "el desorden detrás que nadie va a ver",
   "y los pantalones… opcionales, oh yeah",
 ];
-const LYRIC_T  = [0, 3, 6, 8, 11, 13, 16, 18];
-const lyricsEl = document.getElementById('lyricsContainer');
+const LYRIC_T = [0, 3, 6, 8, 11, 13, 16, 18];
+const lyricsContainer = document.getElementById('lyricsContainer');
+const lyricsInner = document.getElementById('lyricsInner');
+let lastActive = -1;
+
+// Pre-render ALL lines, then slide the inner block to show the right window
+function buildLyrics() {
+  lyricsInner.innerHTML = '';
+  LYRICS.forEach((text, i) => {
+    const ln = document.createElement('div');
+    ln.className = 'lyric-line';
+    ln.textContent = text;
+    ln.dataset.idx = i;
+    lyricsInner.appendChild(ln);
+  });
+}
+buildLyrics();
 
 function updateLyrics(t) {
   let active = 0;
-  LYRIC_T.forEach((ts,i) => { if(t>=ts) active=i; });
-  const start = Math.max(0, active-1);
-  lyricsEl.querySelectorAll('.lyric-line').forEach((ln,i) => {
-    const idx = start+i;
-    ln.textContent = idx<LYRICS.length ? LYRICS[idx] : '';
-    ln.className = 'lyric-line';
-    if(idx===active)     ln.classList.add('active');
-    else if(idx===active-1) ln.classList.add('prev');
+  LYRIC_T.forEach((ts, i) => { if (t >= ts) active = i; });
+
+  // Update active/prev classes without rebuilding DOM
+  lyricsInner.querySelectorAll('.lyric-line').forEach((ln, i) => {
+    ln.classList.remove('active', 'prev');
+    if (i === active)       ln.classList.add('active');
+    else if (i === active - 1) ln.classList.add('prev');
   });
+
+  if (active === lastActive) return;
+  lastActive = active;
+
+  // Measure line height to compute scroll offset
+  const lines = lyricsInner.querySelectorAll('.lyric-line');
+  const containerH = lyricsContainer.offsetHeight;
+  const activeLine = lines[active];
+  if (!activeLine) return;
+
+  // Position inner so active line sits in the upper-center of the container
+  const lineTop = activeLine.offsetTop;
+  const targetY = Math.max(0, lineTop - containerH * 0.28);
+  lyricsInner.style.transform = `translateY(-${targetY}px)`;
 }
 
 // ─── PLAYER ───────────────────────────────────────────────────────────
